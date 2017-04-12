@@ -1,0 +1,277 @@
+2017-4-12
+
+Drone hack: Spoofing attack demonstration on a civilian unmanned aerial vehicle
+
+[Overview] The paper goes over the risks of GPS spoofing for drones using civilian GPS signals.  They also implement and test a sophisticated system for hijacking drone controls through GPS spoofing.  They show that crashing a drone using GPS spoofing is not particularly difficult.  However fine navigation control over spoofed systems, though possible, requires a high level of sophistication in the attacking system.  They suggest that more work be done to implement possible solutions and conclude drone applications in which spoof-resistance would be necessary.
+
+[The good] They develop a system that proves that GPS spoofing is indeed a feasible way to hijack even some more sophisticated controls.  They also demonstrate that spoofing can be used to control the drone and not just crash it out of the sky.  
+
+[The bad] The article doesn't really propose and test a solution, but instead points out that there should be one.  They also don't really give a good definition of what is considered sufficiently spoof-resistant. Since it is in a magazine, it's understandable, but the article lacks technical detail and really only gives a very broad overview.  They mention that the spoofing system they developed was fairly difficult, but they only mention the general components with only minimal description.  It is also substantially shorter than the papers we have read previously.
+
+--------------------------------------------------------------------
+2017-4-10
+
+Drammer: Deterministic Rowhammer Attacks on Mobile Platforms
+
+[Overview] This paper presents deterministic rowhammer attacks that can be carried out without the assuming access to special memory management features.  They also show that this is feasible on previously unexplored mobile platform hardware.  Previously explored rowhammer techniques would not have been effective on slower ARM hardware common in cell phones.  They implement a root privilege escalation attack on Android using an unprivileged app.
+
+[The good] The fact that drammer attacks can be mounted by any app without special permissions or relying on software vulnerability is really interesting since it makes the attack significantly more dangerous.  It's also really significant that the attack is deterministic instead of probabilistic.  The attack immediately gains a new level of threat when it is capable of predictable corruption instead of arbitrary corruption.  The usage of variations in timings is particularly impressive since it requires less information to be directly available.
+
+[The bad] This paper is fairly difficult to read without very detailed prior knowledge of the different kernel calls and memory allocation techniques present in all the systems mentioned in the paper.  They mention a wide range of devices and specific versions that are or are not vulnerable to various techniques.  This gets a little difficult to follow since it switches so rapidly.
+
+--------------------------------------------------------------------
+2017-4-10
+
+Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors
+
+[Overview] This paper shows that disturbance errors in DRAM rows can be caused by repeatedly accessing nearby rows.  They show that the vulnerability of DRAM modules to this kind of error is dependent on the manufacturer and when it was produced.  They also suggest that the victim rows are likely to be physically near the aggressor rows that they are affected by.  They attempt several solutions, but they suggest that the most realistic solution is the solution they tried, called PARA.  Whenever a row is accessed, likely victim rows are refreshed at a low probability.  This is a low overhead solution since it doesn't require state variables.  They find that PARA greatly reduces the chances that DRAM rows experience disturbance errors when a row is repeatedly accessed.
+
+[The good] The depth of analysis about disturbance errors provides a detailed explanation about how they act in DRAM.  With this level of detail, the reader can truly understand why disturbance errors are occurring and how they could be used maliciously.  The fact that disturbance errors are reasonably repeatable and not linked to weak cells is interesting since it suggests that this could be used for more than just arbitrary corruption of DRAM cells.  I like the simplicity of the solution and the fact that it is also a low overhead solution.
+
+[The bad] The explanation of PARA feels a little lackluster in the paper.  I think the portion detailing out how disturbance errors tend to act was far more interesting than the brief explanation of PARA.  PARA seems a little tacked on at the end just so they have a solution to the problem they've found.  Also, PARA seems to require quite a bit of detail about the implementation of the DRAM itself.  It seems unlikely that manufacturers would release information about the internal workings of the DRAM chips to the degree required to make this solution feasible.  It also seems like a problem that the manufacturers of the chip would be motivated to solve independently.  That makes PARA fairly difficult to implement.
+
+--------------------------------------------------------------------
+
+2017-4-7
+
+SAFER: System-level Architecture for Failure Evasion in Real-time Applications
+
+[Overview] This paper presents a method for increasing the robustness of a real-time system through software replication and a layer called SAFER that acts as an overseer to manage tasks and processors.  The idea is that there is no single point of failure in the system.  The SAFER implementation handles failures under a bounded time-to-recovery.  SAFER monitors processor and task heath status through heartbeats and OS signals.  Given any failures, SAFER reconfigures the system to recover from the fault by using hot and cold standbys.  It executes this recovery in a bounded amount of time.  SAFER modules are also monitored by other SAFER modules using heartbeats.  Tasks are divided into hard recovery, soft recovery, and best effort tasks and this determines the level of recovery options required for that task.  Hot and cold standbys may be allocated depending on the reliability requirements of a task.  Hot standbys are more resource intensive, but faster since they run concurrently with the actual task.  Cold standbys are less resource intensive but have higher latency upon being triggered.
+
+[The good] I appreciate the flexibility of the implementation of SAFER since it allows for multiple categories of tasks and gives options for more or less robust recovery of tasks.  It is also an interesting implementation in the way it handles any single point of failure.  It's bounded recovery time is also really handy for real-time system implementations since your worst case time is still calculable even given the possibility of faults.  I also really like their experiment on Boss and the fact that this software has been tested in the real environment and not just in simulations or invented scenarios.
+
+[The bad] There is the unfortunate side effect of making the system more complex.  The higher the complexity, the more likely an unexpected failure may occur and the more difficult it is to verify that the system is robust.  This implementation does also require that each important task be executable on at least two processors.  This is not as extreme as full hardware redundancy, but it is still an increase in the requirements of the system resources.
+
+--------------------------------------------------------------------
+2017-4-7
+
+ROS: an open-source Robot Operating System
+
+[Overview] This paper covers the Robot Operating System (ROS) framework which allows for rapid prototyping by managing large scale projects.  It supports peer to peer communication through publisher and subscriber nodes.  ROS encourages modular code and containing complexity in libraries so code remains reusable without the developer having to create too much middle-ware.  This is particularly important when dealing with a project with high complexity.  ROS allows for each node to be tested independently.  It also allows for large projects to be run without a developer explicitly writing custom scripts.  This flexibility standardizes the software management without requiring developers to program custom systems for each new robotics application.  These features, along with the fact that ROS is free to use, make ROS an ideal platform for small robotics applications where communication between nodes can be more easily handled systematically through ROS.
+
+[The good] I've used ROS and I understand how this kind of standardization is ideal when working on a project that has many modular programs which may be coded by different developers.  Instead of having to work out a new control scheme for each project and having to come up with standards for such interactions, ROS implements this functionality in a documented way.  With ROS, developers can work on and test code without having to understand the entire system.  ROS also allows for some nice features such as debugging or searching nodes that would otherwise be difficult to implement. 
+
+[The bad] It feels like an oddly short paper and I don't think that I could actually use ROS to any degree if I'd only read this paper.  Also, they don't really list any drawbacks of ROS, or compromises made when implementing ROS.  It comes across as selling ROS instead of providing an objective analysis of ROS.
+
+--------------------------------------------------------------------
+2017-4-5
+
+A Simplex Architecture for Intelligent and Safe Unmanned Aerial Vehicles
+
+[Overview] This paper covers an implementation of the Simplex architecture for an unmanned drone.  The simplex architecture is composed of two separate computers that are used together to allow for the high performance of a complex system and for the safety of an easily verifiable and robust system.  These systems are designated HP (high performance) and HA (high assurance).  They used a Tegra K1 for their HP system and an Arduino Due.  The Arduino is resistant to hardware faults and only the absolutely necessary software is implemented.  The HA platform is implemented to be able to detect errors with the HP system and take control as the HP system is restored.  They then test this system with the two platforms and intentionally crash the HP system.  The HA system takes control until the HP system is recovered and stable enough to resume.
+
+[The good] This paper is a good proof of concept and shows that passing control between HP and HA systems is implementable.  The fault detection could use some work, but I believe the main goal was to establish that the tradeoff between the systems worked effectively.  This architecture allows for both the safety of a simple system and the increased capablities of a more complex system.  The paper is also well written and easy to read.
+
+[The bad] The paper is a high level overview so it lacks some details about the internal implementation.  They list several kinds of faults earlier in the paper, but their experiment only checked for complete crashes of the HP platform.  This is probably the easiest type of failure to detect but this limits the usefulness of the system.  Detecting some of the less obvious faults is the obvious next step and possibly difficult since some of the faults are subtle.
+
+--------------------------------------------------------------------
+2017-4-5
+
+Application and System-Level Software Fault Tolerance Through Full System Restarts
+
+[Overview] This paper implements a Simplex like system on a single processor in order to handle application level, or system level faults.  They do this through a Base Controller (BC) and a Decision Module (DM).  This architecture allows for only the BC and DM to require verification.  In this paper, when a fault is detected, the system is restarted in order to recover and achieve a known state.  They successfully implemented this style of system in a 3DOF helicopter and tested it by injecting faults.
+
+[The good] This is particularly interesting since it tackles the same problem as the above paper in a slightly different way.  It is convenient that it allows for this architecture to be implemented on a single platform since this is more effective for SWaP restrictions.  Reducing the verification requirements on the real-time software applications is also commercially beneficial.
+
+[The bad] Part of what I understood to be the benefits of the Simplex architecture is that two platforms allows for cross-checking.  This should be effective against hardware faults as well, but the single platform implementation only allows for application or system level faults to be handled.  Also, full restarts of the system pose a risk in real-time systems since restarting can take a significant period of time depending on the platform.
+
+--------------------------------------------------------------------
+2017-4-3
+
+High Speed Obstacle Avoidance using Monocular Vision and Reinforcement Learning
+
+[Overview] This paper is about using monocular vision obstacle detection to navigate a fast RC car through irregular natural environments.  They use linear regression to train an algorithm to detect the nearest object within vertical strips of an image and report the results back to navigate the car.  They trained the algorithm on both real images and synthetically generated images.  They found that combining the real and synthetically generated images was less effective than a voting scheme using the system trained on real images and the system trained on synthetic images.  This scheme managed to produce better results than either system independently.  They test the RC car through several different environments and conclude that the scheme is reasonably successful in navigating the tested environments.
+
+[The good] This paper is very informative about the basic concepts and motivations behind their decisions.  Monocular vision object detection is really appealing due to it's reduced requirement on bandwidth and processing.  It also reduces the number of sensors to a single camera.  Leveraging this, you could improve the speed that the robot can safely travel.  Also, it is really interesting that they can successfully train the algorithm using generated data.  Generated data is substantially easier and cheaper to acquire than real images and depth information.  I feel that I can apply some techniques in my project.  It may actually be possible to implement some of these techniques on the system me and Adam have.
+
+[The bad] I'm not sure that based on their data I can really agree with the conclusion that monocular vision is sufficiently reliable for driving at high speeds.  Table 1 suggests that they make hazardous navigation decisions about once a minute depending on the environment.  This may be acceptable for an RC car that can crash routinely without much consequence, but makes it hard to suggest this kind of vision for real automotive applications.
+
+--------------------------------------------------------------------
+2017-3-31
+
+Real-Time Multi-Core Virtual Machine Scheduling in Xen
+
+[Overview] This paper goes over implementation of real-time systems using virtual machines on shared multi-core processors.  They discuss the differences between Xen for single core processors in which a virtual machines resources can be defined as a period and a budget and the multicore processor version in which an additional cpu_mask parameter must be included.  The Xen platform supports both global and partitioned schedulers for the virtual machines.  Xen 2.0 differs from the original Xen in implementation since it doesn't re-insert the current VCPU into the run-queue after execution since it is shared between the cores, so instead it has a run-queue and a context-saved function that the context-switch function that ensures the virtual machines' context is saved before reinserting it into the run-queue.  Their experiment compared different scheduling schemes on different task-sets.  They conclude that on the host OS, a partitioned scheduler always outperforms a global scheduler.  However, on the virtual machines, a global scheduler can outperform a partitioned scheduler.
+
+[The good] The comparisons between the different algorithm seem to be a fairly comprehensive analysis of how the different algorithms operate with different workloads.  The global vs partitioned scheduler results are interesting since they contradict what would generally be expected in the non-virtual environment.  The paper is also a nice read and not difficult to follow.
+
+[The bad] It's a little strange that they seem to be comparing Xen to Xen in general.  I understand the focus is on the different schedulers, but they discuss the implementation of Xen and then proceed to compare Xen scheduling.  As such, I can't reason that the usage of Xen is any better than anything else, but if Xen has been chosen to be used, then the paper is good as reference as to how to use Xen scheduling effectively.
+--------------------------------------------------------------------
+2017-3-29
+
+SCHEDULING AND LOCKING IN MULTIPROCESSOR REAL-TIME OPERATING SYSTEMS. Chapter 3.3. The Design and Implementation of LITMUSRT
+
+[Overview] This chapter of the thesis describes an extension onto the Linux platform that enables real-time scheduling of applications.  It describes the purpose of LitmusRT as a real-time system as well as give insight to the internals of how the scheduling and preemption are implemented.  The chapter gives some insight on what debugging capabilities are available as well as mentioning the importance of them being lightweight. Preemption and non-preemptable sections are mentioned in detail given their importance in real-time applications.  It also gives some caveats about features, like how non-preemptable section lengh limits would be an important restriction to implement but hasn't been implemented due to the research-based nature of LitmusRT. 
+
+[The good] The fact that periodic execution can be used on any Linux process is really appealing for research purposes since it allows for easier testing of many different schedulers or systems.  It's really useful that they mention how "quick resuming tasks" are a common weakness of scheduling systems since they can trigger race conditions where the task is either lost, or doubly enqueued.  I appreciate that the chapter is very candid about the strengths and weaknesses of the operating system.  The section about preemption was particularly interesting since there are many more details to the implementation of the preemption than I realized.  I didn't realize that non-preemptable sections used to reduce overhead were considered acceptable in real-time systems.  Also, "eager" and "lazy" preemption techniques since I hadn't considered non-preemptable sections of code in real-time systems.  Naively, "eager" seems like a less risky approach since "lazy" could result in longer delays, but the risks of preempting a task that should be running are higher.  Lastly, their focus on creating a software for research purposes in apparent in the way that they give multiple options for quantum size and alignment.  The flexibility of this real-time operating system shows and supports it's intended purpose as a research oriented operating system.
+
+[The bad] It is a little unfortunate that the experiment and the paper seem to be separated by a transitional period in Linux development that implemented many of the features that they had to implement.  This is probably fairly common in this kind of extension development.  Also, since the LitmusRT extension of the Linux operating system is research oriented, it seems to lack the kinds of double-checking and user protection that other operating systems have.  Although, it is probably acceptable to crash instead of fail gracefully since it is indeed a real-time system and the user can be assumed to know about the restrictions of the system and indeed want the system to fail completely rather than attempt recovery in an undesired way.
+
+--------------------------------------------------------------------
+2017-3-13
+
+Supporting Real-Time Computer Vision Workloads using OpenVX on Multicore+GPU Platforms
+
+[Overview] This paper evaluates the usability of OpenVX for real-time workloads.  They specifically focus on the evaluation of different scheduling techniques and evaluate which are most appropriate for real-time workloads based on measured timings of workloads.  They propose an extension OpenVX's execution model in VisionWorks that incorporates GPUSync to allow for pipelining.  Their evaluation showed that the GPUSync based scheduling algorithm was more appropriate for real-time applications than SCHED_OTHER, SCHED_FIFO, and LITMUS since it has more consistently predictable execution times.
+
+[The good] The paper presented a relatively detailed discussion about the current shortcomings of OpenVX for real-time Computer Vision workloads and proposes a well described solution with easily understood metrics of improvement.  For this reason, I found the paper easy to read and informative.  I also appreciated how their proposed solution could be implemented through only software changes.
+
+[The bad] As they recognized in their proposed future work, the measurement based analysis they used to compare the different scheduling strategies could be improved by incorporating other sources of delay in the system.
+
+--------------------------------------------------------------------
+2017-3-8
+
+An Evaluation of the NVIDIA TX1 for Supporting Real-time Computer-Vision Workloads
+
+[Overview] This paper presents an analysis of the Tegra TX1's effectiveness in real time applications.  They summarize and analyze the structure of the CPU and GPU memory system and note some benefits along with some concerns.  They then address the concept of co-scheduling GPU tasks.  While they show some benefit through co-scheduling tasks it stems mostly from the CPU operating concurrently with the GPU rather than time saved in the GPU itself.  They show that co-scheduling is not detrimental to computation speed. However, they discovered that the GPU doesn't run differnt kernels blocks concurrently so the experiment only showed that the overlapping of CPU and GPU executions can be beneficial.
+
+[The good] The content is very informative and tackles some practical experiments with the GPU.  I was not aware that the shared DRAM skips cache memory.  The first half of the paper was a very informative, neatly written summary of some important points of the Tegra's memory system.  Insight on the internals of the typically "black-box" GPU provides hints as to how to best utilize the GPU in real applications.
+
+[The bad] The paper reads like it is two papers, and thus feels like the analysis and experiment lack a little depth.  I'm a little concerned that the writers of the paper, after analyzing the structure of the Tegra, seem to have been caught off-guard by the fact that blocks from different kernels don't overlap.  The actual execution in the GPU should have been a focus.  Overall times don't really give much indication as to why things are occurring.  
+
+--------------------------------------------------------------------
+2017-3-3
+
+Predictable Programming on a Precision Timed Architecture
+
+[Overview] This paper presents a novel architecture for hard real-time systems that prioritizes temporal predictability.  The new PRET architecture utilizes scratchpad memory to make timing of memory processes more predictable. They implement a round-robin style pipeline that prevents threads from temporally interferring with each other because of stalling.  They do this by having stalled threads block until it is again their turn to execute in the cyclic thread controller.  The memory system also benefits from a similar cyclic architecture controlling when threads have access to memory.
+
+[The good] The paper is very well written, and although not all the concepts are intuitive, the paper includes the logical steps to follow their reasoning.  Since most processors are architectured to optimize average case performance this is good for best effort computing tasks.  The novel PRET architecture gives a solid foundation for hard real-time systems with predictable worst case execution time.  The cyclic architecture is also impressive in that it eliminates the need for locks in the system since all memory accesses are atomic.  This spatial and temporal separation of threads allows the system to perform in a way that only the order of commands must be monitored and not locks on shared resources.
+
+[The bad] Currently, the architecture assumes that program code fits entirely in scratch-pad memory.  The cyclic pattern for the pipeline and the memory controller may have significant delays in single threads since any stall is forced to block and allow all other threads to execute their turns before being allowed to continue.  The interleaved theading design causes a degradation in average-case performance times.  They also mention that the lack of locks makes programming more challenging since the synchronization becomes dependent on the developer.  The current benchmarks, since they are not implemented for the PRET architecture and do not utilize the deadline instruction, are not a clear indication of how well the system can perform.  
+
+--------------------------------------------------------------------
+2017-3-1
+
+Hardware Support for WCET Analysis of Hard Real-Time Multicore Systems
+
+[Overview] The paper proposes a combination of existing techniques to create a multicore architecture.  They then analyze the multicore architecture using a combination of their own multicore and existing single-core analysis techniques.  They partition memory to reduce spatial interferrence of cores in cache and DRAM banks.  They then utilize a round robin scheduling technique to provide an upper bound on delay.  Another benefit of their technique is that it doesn't require a full re-analysis of the system every time anything changes in the system.  Instead, only the tasks specifically involved in the change require reanalysis.
+
+[The good] I appreciated that the paper was reasonably easy to read.  It was structured logically and followed a clean train-of-thought.  The acknowledgment and analysis including the bus delays is nice considering that many papers seem to like to dismiss bus delays.  I like how the analysis technique utilizes modes of the hardware to get real times off the system by combining actual run times and forced worst-case conditions.
+
+[The bad] The paper seems to be essentially an analysis of a combination of existing techniques.  This may be an artifact of my reading more research papers, but this one didn't seem to have a lot in the way of novel solutions or analysis.  Though it was notable that they acknowledged bus delays.  They mention that partitioning can reduce spatial interference but can also reduce the benefits of having a multicore processor.  They then proceed to simply utilize partitioning without much discussion regarding the costs of doing so.
+
+[Comments] I don't think I'll ever be very fond of inline equations.  They're hard to read.
+
+--------------------------------------------------------------------
+2017-2-27
+
+Extensible Energy Planning Framework for Preemptive Tasks
+(not class)
+
+[Overview] The paper proposes and analyzes a frequency modulating system that would reduce power consumption while still allowing all real-time tasks to meet their required hard deadlines.  The proposed model, though not particularly scalable, is suggested by the paper to be a significant decrease in the frequency ratio compared to the previous RTC method.
+
+[The good] The idea and research portion seems like it's probably solid.  I like what seemed to be the intent of the paper.  Conserving power in a real-time system without sacrificing schedulability of the tasks is an interesting problem to try to tackle.  Determining the minimal ratio of processor frequency seems like it would be an effective way to conserve power consumption of real-time tasks.  Even though it's not very scalable, it's still effective for the systems it most benefits since many systems in which power is a defining constraint are small systems that could be implemented with an exhaustive search algorithm such as the model-based method suggested in the paper.
+
+[The bad] An issue with the content is that the solution is not scalable.  Also, I'm a little dissatisfied with the paper because it feels like it could be an interesting, reasonable way to reduce power consumption of real-time systems.  The paper started off very nicely, but soon regressed to a paper that I inherently didn't trust what it said because it felt like the authors were confused.  It feels as if there is content written into the paper that the authors didn't intend and some left out that was intended.  This makes it difficult to figure out what the authors actually wanted to convey.
+
+[Comments]
+The inline equations containing fractions are kinda cramped.
+Also, the inline equations that span multiple lines are really strange.
+There are more typos and grammar issues than I would expect to find in a submitted research paper.
+This combined with the "...as follows:" style makes the paper kind of awkward to read.
+I believe that some sentences might have unintended connotations due to grammar problems.
+
+Issues/Typos:
+- II. Related Work, first paragraph, last word: "costumers"
+- III. Preliminaries, A., last paragraph: "we utilizes only"
+- They use "slack" early in the paper and "laxity" later in the paper.
+- Probably a latex command gone wrong: Fig. ̃reffig:PeriodicExecution.
+- Font size is inconsistent in text between equations.
+
+--------------------------------------------------------------------
+2017-2-22
+
+Parallelism-Aware Memory Interference Delay Analysis for COTS Multicore Systems
+
+[Overview] This paper covers a series of lemmas and proofs describing a method to predict the worst case execution times of modern COTS multicore systems.  It covers the worst case run times of a system that assumes spatial partitioning of both the LLC cache and the DRAM.  It also assumes that each core can only generate one outstanding DRAM memory request at a given time.  As we saw in the earlier MSHR paper, this is not a necessarily accurate assumption for modern processors.  Overall, the paper provides a much safer worst-case scenario than previous techniques.
+
+[The good] The increased level of parallelism in modern COTS multicore systems has rendered earlier analysis techniques of worst case run times ineffective as they are too optimistic.  This paper accounts for some of the new parallelism features.  It is convenient that the equations can be combined in multiple ways in order to gain optimistic, realistic, and pessimistic predictions based in the amount of consideration given to write-draining.  The fact that the analysis technique allows for worst-case performance to be analyzed without knowing the specific interactions of the memory makes it a valuble resource when attempting to design hard real-time systems.  It's nice that this paper seems to be a good companion for the MSHR paper since this one doesn't really account for MSHR contention but acknowledges that it could be important to consider.
+
+[The bad] I'm not sure why this paper didn't include tests outside of the Gem5 simulations.  The analysis technique has a tendency to be overly pessimistic when write-draining is considered.  The paper also requires a fairly in-depth knowledge of the semantics of the components of the modern COTS multicore setup and detailed knowledge of the potential delays and drawbacks of systems that increase parallelism.  This includes the semantics of the pipeline process for memory reads.  Since much of the components considered in the paper were beyond my prior knowledge, I found this paper to be a fairly difficult read.
+
+--------------------------------------------------------------------
+2017-2-17
+
+A Real-Time Scratchpad-centric OS for Multi-core Embedded Systems
+
+[Overview] The paper covers a method of improving predictability in multicore platforms utilizing the SPM located within the cores local caches.  They assume that all tasks can run using only half of a core's SPM memory space and that the COTS system that is used offers a significant number of contention limiting systems such as an IO core and dual-ported memory.  Under their given assumptions, they propose that they can implement a temporally separated structure for the cores that allows tasks to run within easily definable worst case run times.
+
+[The good] The paper's analysis indicates a high level of consistency in run times of tasks that couldn't be achieved in the contention based SRAM case.  They also saw an improvement in run times by 2.1x.  Lastly, the paper gives a well defined worst-case run time which is ideal for a real-time system.  Since this is not easily calculable with most multicore systems due to contention over shared resources, this is significant.
+
+[The bad] This temporal separation of the memory accesses requires that each task fit within half of the local cache of a system.  They justify this drawback by suggesting that tasks can be broken into several smaller tasks that then satisfy this condition.  They also explain that there are some time slots that are not necessarily utilizable and that lower priority task that has already begun loading will take the full slot even if a higher priority task shows up.  If the time partitions are frequent enough, then this isn't really a concern.  However, since this strategy loads memory in chunks the size of half the SPM at a time (and must allocate enough time to do so), it seems like this could be a form of priority inversion.  It felt like some drawbacks to the system were dismissed without much explanation.
+
+--------------------------------------------------------------------
+2017-2-15
+
+Taming Non-blocking Caches to Improve Isolation in Multicore Real-time Systems
+
+[Overview] The paper discusses how the cores out-of-order multicore processors are not sufficiently isolated from each other with page coloring that allows them to be spacially separate.  The existance of Miss Status Holding Registers is a significant source of contention.  This contention decreases the predictability of tasks run on the system since the MSHRs of the shared LLC can all be occupied and delay memory requests from cores even if they are cache hits. The paper proposes a hardware solution that would allow the OS to control the MSHRs to increase isolation between cores and thus improve predictability in task execution times.
+
+[The good] The solution is an interesting concept that would increase the predictability of multicore real time systems.  It improves the predictability of real-time tasks in a multicore system while allowing best-effort tasks to be run on the system simultaneously.
+
+[The bad] The solution is implemented through hardware in the cores themselves.  This is less ideal than a solution strictly involving software since the cores must be physically changed in order for this to be implemented.  Though recognized in the paper, the solution also worsens the average run-time of best-effort tasks.
+
+--------------------------------------------------------------------
+2017-2-9
+
+Human-level control through deep reinforcement learning
+
+[Overview] The paper discusses a new Deep Q Learning algorithm that expands on standard Q learning techniques and allows them to be applicable given raw (visual) input data.  This algorithm can be used as a general learnign algothm.  It takes the standard Q learning approach and, given visual input of Atari games, takes a series of convolutions over the input.  They then feed this to a training algorithm and generate a predicted course of highest possible reward.  They improved the standard Q learning algorithm by using experience replay that stores past playthroughs in memory and uses them for minibatch updates.  This method is also used in order to prevent the algorithm from learning exclusively from sequential updates.  Learning from sequential updates reduces the learning speed of the standard Q algorithm since the algorithm favors acting "recent" good experiences and can achieve a positive feedback loop that takes time to break out of if a standard epsilon-greedy algorithm is used.
+
+[The good] The improvements to the standard epsilon-greedy Q learning algorithm seem fairly novel and are applicable over a much broader spectrum of inputs.  They fix many of the issues that Q learning represents.  These improvements include the tendency of Q learning to favor recent good experiences and fail to reach other potentially more profitable options for a large amount of time in training.  This issue is also improved by the observational learning the computer acquires by watching humans play.  They also improve the problem that Q learning has with an overabundance of potential states.
+
+[The bad] I'd be very interested to know if there was anything that distinguished the games the algothim managed to play better than a human and the ones it didn't.  I also don't particularly understand why having an algorithm that generates gamma is useful or improves stability. 
+
+[Questions] 
+-In the chart comparing the DQL algorithm to the linear algorithm and humans, was the point score based on the -1/+1 system or the original scoring of the game?
+-How does generating gamma improve stability?
+
+--------------------------------------------------------------------
+2017-2-7
+
+An Open Approach To Autonomous Vehicles
+
+[Overview] This paper provides insight on an open-source autonomous driving software called Autoware.  It gives a complete overview of the steps to creating a software that can use a listed series of sensors to achieve an autonomously driving vehicle.  The paper presents specific means of achieving each step and recognizes processing constraints towards the end.  The current software and hardware used for the case study presented as part of this paper cannot achieve what they would consider good enough results for real world applications, needing processing at least 2x as fast as they achieved in their tests to overcome the object detection bottleneck.
+
+[The good] The paper consolidates many research topics regarding autonomous vehicles and presents a developer/researcher friendly way to approach replicating and improving upon their autonomous car, as is typically the ideal when considering open-source code.  Each step of the process to directing an automous vehicle is at least acknowlaged and often given a suggested method for achieving it.  I'm looking forward to diving a little deeper into some of they links they provide.
+
+[The bad] Though the paper covers an open-source autonomous driving software platform, it doesn't mention the security risks involved.  Though acknowleged in the final sections of the paper, it would have also been nice if the paper outlined what their goals were in the autonomous car since it is only in the last section that they mention that the processing is too slow for the current platform to handle a car travelling even 40km/hr.  Also, a mention of they methods of testing their algorithms and the actual counts on the computing platforms that they used or tested with would have been nice since they only mention types of computers that they used.  I only mention this since they later complain that the GPUs are too slow.  I can only assume that the algorithms were being tested one at a time on a single computing platform.
+
+--------------------------------------------------------------------
+2017-2-2
+
+Certification Authorities Software Team (CAST). CAST-32A: Multi-core Processors
+
+[Overview] This paper identifies topics that have to be considered when implementing multi-core processors in aerospace systems.  The topics are identified based on their potential impact on safety, performance, and integrity of systems.  This paper focuses on topics that are unique to MCPs and not shared by single-core processors.
+
+[The good] This paper is very good for use as referance material if the reader is looking for what they might have to account for when using multi-core processors in aerospace equipment.  This paper is also very effective at pointing at the necessary materials to use in order to comply with standards.  The information in the paper is an excellent place for someone to begin to gain a vague understanding of the scope of a project involving MCPs in aerospace equipment.
+
+[The bad] The paper is very repetitive with many of the points reiterated almost word for word in several sections.  This is effective if the reader uses this as a quick reference, but is fairly inconvenient when reading the paper for the first time since the structure feels unnatural.  Though expected for a paper that overviews requirements for projects, it only lists problems and categories of possible solutions that could be explored.
+
+Feedback Comments: The summary seems to be a bit too high-level. You need to demonstrate that you read and understand major contents of the paper (not just introduction)
+
+--------------------------------------------------------------------
+Example
+
+[Overview] This paper presents a kernel level page allocator which is
+DRAM Bank-Aware. This allocator is able to allocate pages across cores
+in a way that causes banks to be shared or partitioned depending on
+user configuration. This can be used to provide more predictable
+memory access to multicore software. The authors implemented their
+memory allocator in a recent version of the Linux Kernel and compared
+its performance with the existing buddy allocator.
+
+[The good] This paper is well written. The issue of DRAM banks was not
+familiar to me at the time of reading but was well explained which
+motivated the rest of the paper well. The algorithm used is quite
+straightforward and the explanation is easy to follow.
+
+[The bad] While the authors acknowledge that the approach they take
+bears similarity to multi-core page coloring[1,2,3,4] the novelty of
+their work is not well established. This work appears to be a
+relatively straightforward application of rudimentary page coloring
+techniques. The related work section touches on these similarities but
+does not establish any particular novelty aside from the fact that
+this paper is addressing the problem of shared DRAM banks for the sake
+of isolation and not shared caches.

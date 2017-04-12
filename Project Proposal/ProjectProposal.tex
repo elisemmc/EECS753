@@ -1,0 +1,38 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Project Proposal}
+\author{Elise McEllhiney \qquad  Adam Van Hal}
+\date{\today}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\section{Motivation}
+Intelligent vehicles are becoming more prevalent.  Related sensors are becoming better researched and less expensive to implement.  However many purpose built solutions remain prohibitively expensive for consumer applications.  This includes robotics applications cost is the primary concern.  Small, inexpensive robots have many applications such as inspection.  It is often preferred that these robots perform without human intervention or control since the locations may not be conducive to remote control with acceptable latency.
+
+\section{Concept}
+Create an intelligent robot that uses affordable sensors including image sensors (e.g., webcams) to navigate it's environment.  We'd like to create a small robot that can avoid obstacles.  We will implement this on a RaspberryPi 3 and the robotics will be implemented using Arduino.
+
+\section{Potential Direction}
+A stereo camera solution due to the unreliability of inexpensive depth cameras that rely on specific lighting conditions to operate.  It is also appealing as it is easily extendable since sensors don't physically interfere with each other.  This stereo solution can be implemented using two matching webcams and OpenCV to derive distance data from images.
+
+\section{Extensions}
+\begin{enumerate}
+\item Compare dedicated real-time OS vs standard Raspbian\\
+\item Implement machine learning solutions to have the robot navigate the environment more effectively\\
+\item Integrate multiple sensors\\
+\item Test usage of pre-processing and post-processing of images\\
+\end{enumerate}
+
+%\subsection{}
+
+
+
+\end{document}  
